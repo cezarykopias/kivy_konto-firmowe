@@ -1,0 +1,158 @@
+ScreenManager:
+    MainMenu:
+    Buy:
+    Sell:
+    Saldo:
+    Storage:
+    History:
+
+
+<MainMenu@Screen>
+    name: 'menu'
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            text: 'Wpłata / Wypłata'
+            on_release: app.root.current = 'saldo'
+        Button:
+            text: 'Sprzedaż'
+            on_release: app.root.current = 'sell'
+        Button:
+            text: 'Zakup'
+            on_release: app.root.current = 'buy'
+        Button:
+            text: 'Stan Magazynu'
+            on_release: app.root.current = 'storage'
+        Button:
+            text: 'Historia Wpisów [DEBUG]'
+            on_release: app.root.current = 'history'
+
+
+<Saldo@Screen>
+    name: 'saldo'
+    on_pre_enter: info.text = app.balance()
+    Basic:
+        BoxLayout:
+            size_hint_y: .2
+            TextInput:
+                font_size: dp(60)
+                text: '0'
+                id: amount
+                input_filter: 'int'
+            Button:
+                size_hint_x: .2
+                on_release: info.text = app.balance(int(amount.text))
+                text: '+/-'
+        Label:
+            id: info
+            font_size: dp(40)
+
+<Sell@Screen>
+    name: 'sell'
+    on_pre_enter: app.hardware_data();  name.values = app.hardware_store.keys()
+    Basic:
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                Label:
+                    text: 'Nazwa'
+                Label:
+                    text: 'Cena:'
+                Label:
+                    text: 'Sztuk:'
+            BoxLayout:
+                size_hint_y: .5
+                Spinner:
+                    text:''
+                    id: name
+                TextInput:
+                    input_filter: 'int'
+                    text: ''
+                    id: price
+                TextInput:
+                    input_filter: 'int'
+                    text: ''
+                    id: count
+            Label:
+                id: info
+            Button:
+                size_hint_y: .5
+                text: "SPRZEDAJ"
+                on_release: info.text = app.sell(name.text, int(price.text), abs(int(count.text)))
+
+<Buy@Screen>
+    name: 'buy'
+    Basic:
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                Label:
+                    text: 'Nazwa:'
+                Label:
+                    text: 'Cena:'
+                Label:
+                    text: 'Sztuk:'
+            BoxLayout:
+                size_hint_y: .5
+                TextInput:
+                    text:''
+                    id: name
+                TextInput:
+                    input_filter: 'int'
+                    text: ''
+                    id: price
+                TextInput:
+                    input_filter: 'int'
+                    text: ''
+                    id: count
+            Label:
+                id: info
+            Button:
+                size_hint_y: .5
+                text: "KUP"
+                on_release: info.text = app.buy(name.text, int(price.text), abs(int(count.text)))
+
+<LargeLabel@Label>
+    font_size: dp(40)
+    halign: 'left'
+    valign: 'middle'
+
+<Storage@Screen>
+    name: 'storage'
+    on_pre_enter: records_viewer.data = app.hardware_data()
+    Basic:
+        RecycleView:
+            id: records_viewer
+            viewclass: 'LargeLabel'
+            RecycleBoxLayout:
+                default_size: None, dp(66)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+            
+<History@Screen>
+    name: 'history'
+    on_pre_enter: records_viewer.data = app.history_data()
+    Basic:
+        RecycleView:
+            id: records_viewer
+            viewclass: 'Label'
+            RecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+
+
+# ELEMENTS
+<Basic@BoxLayout>
+    orientation: 'vertical'
+    Button:
+        text: 'Menu Główne'
+        on_release: app.root.current = 'menu'
+        size_hint_y: .1
+
+
+    
