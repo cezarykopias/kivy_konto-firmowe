@@ -9,9 +9,10 @@ class MainApp(App):
     store = JsonStore('data.json')
     try:
         money_amount = store.get('Kame7C0')['balance']
+        # Simple Seller
     except KeyError:
         money_amount = store.put("Kame7C0", balance=0)
-        # {"Kame7C0": {"balance": 0}}
+        # first record init to  {"Kame7C0": {"balance": 0}}
     hardware_store = defaultdict(lambda: 0)
     
     # for kv lang
@@ -23,12 +24,14 @@ class MainApp(App):
             self.hardware_store[name] -= count
             self.store.put('Kame7C0', balance=self.money_amount)
             return f"Pomyślnie sprzedano produkt. {count}\n\
-                Pozostało {avalible}"
+                Pozostało {avalible - count}"
         else:
             return f"Nie ma wystarczająco produktu w magazynie.\n\
                 Pozostało {avalible}"
  
     def buy(self, name, price, count):
+        if not price or not count:
+            return f"Co?."
         cost = price * count
         if self.money_amount >= cost:
             self.store.put(str(dt.now()), name=name, price=price, count=count)

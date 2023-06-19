@@ -24,7 +24,7 @@ ScreenManager:
             text: 'Stan Magazynu'
             on_release: app.root.current = 'storage'
         Button:
-            text: 'Historia Wpisów [DEBUG]'
+            text: 'Historia Wpisów {JSON}'
             on_release: app.root.current = 'history'
 
 
@@ -99,11 +99,11 @@ ScreenManager:
                     id: name
                 TextInput:
                     input_filter: 'int'
-                    text: ''
+                    text: '0'
                     id: price
                 TextInput:
                     input_filter: 'int'
-                    text: ''
+                    text: '0'
                     id: count
             Label:
                 id: info
