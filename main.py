@@ -6,6 +6,7 @@ from collections import defaultdict
 
 
 class MainApp(App):
+    # init
     store = JsonStore('data.json')
     try:
         money_amount = store.get('Kame7C0')['balance']
@@ -15,12 +16,17 @@ class MainApp(App):
         # first record init to  {"Kame7C0": {"balance": 0}}
     hardware_store = defaultdict(lambda: 0)
     
+
     # for kv lang
     def sell(self, name, price, count):
+        cost = price * count
+        if not price or not count or cost < 0:
+            return f"Co?. \n Koszt = {cost}"
+        
         avalible = self.hardware_store[name]
         if avalible >= count:
             self.store.put(str(dt.now()), name=name, price=price, count=-count)
-            self.money_amount += price * count
+            self.money_amount += cost
             self.hardware_store[name] -= count
             self.store.put('Kame7C0', balance=self.money_amount)
             return f"Pomyślnie sprzedano produkt. {count}\n\
@@ -28,11 +34,13 @@ class MainApp(App):
         else:
             return f"Nie ma wystarczająco produktu w magazynie.\n\
                 Pozostało {avalible}"
- 
+
+
     def buy(self, name, price, count):
-        if not price or not count:
-            return f"Co?."
         cost = price * count
+        if not price or not count or cost < 0:
+            return f"Co?. \n Koszt = {cost}"
+        
         if self.money_amount >= cost:
             self.store.put(str(dt.now()), name=name, price=price, count=count)
             self.hardware_store[name] += count
